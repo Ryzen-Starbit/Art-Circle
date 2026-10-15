@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Art Circle BVCOE</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Art Circle, the cultural committee of BV(DU) College of Engineering, Pune. Home of Malang, The Literary Council, RAQS, Rhapsody, Malhaar and Vaaqif, and organisers of Bharatiyam.">
+<link rel="icon" href="assets/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Yatra+One&family=Hanken+Grotesk:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&family=DM+Mono:wght@400;500&family=Kalam:wght@400;700&family=Special+Elite&display=swap">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<canvas class="fx-stars" id="fxStars" aria-hidden="true"></canvas>
+<canvas class="fx-sparks" id="fxSparks" aria-hidden="true"></canvas>
+
+<nav class="nav" id="nav" aria-label="Main">
+  <div class="wrap nav-in">
+    <a class="brand" href="#home" aria-label="Art Circle home">
+      <img src="assets/logo.png" alt="">
+      <span>Art Circle</span>
+    </a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="#home" data-nav="home">Home</a></li>
+      <li><a href="#about" data-nav="about">About</a></li>
+      <li><a href="#clubs" data-nav="clubs">Clubs</a></li>
+      <li><a href="#bharatiyam" data-nav="bharatiyam">Bharatiyam</a></li>
+      <li><a href="#schedule" data-nav="schedule">Schedule</a></li>
+      <li><a href="#team" data-nav="team">Team</a></li>
+      <li><a href="#gallery" data-nav="gallery">Gallery</a></li>
+      <li><a href="#contact" data-nav="contact" class="nav-cta">Contact</a></li>
+    </ul>
+    <button class="menu-btn" id="menuBtn" aria-expanded="false" aria-controls="navLinks">
+      <span></span><span></span><span class="sr">Menu</span>
+    </button>
+  </div>
+</nav>
+
+<div class="wipe" id="wipe" aria-hidden="true"><div class="wipe-disc"></div><img src="assets/logo.png" alt=""></div>
+
+<main id="main">
+
+  <section class="page" data-page="home" id="page-home">
+    <header class="hero">
+      <div class="hero-dots" aria-hidden="true"></div>
+      <div class="wrap hero-grid">
+        <div class="hero-copy">
+          <p class="kicker">The cultural committee of BV(DU) COE, Pune</p>
+          <h1 class="hero-title"><span>Art</span> <span>Circle</span></h1>
+          <p class="hero-sub">The creative hub of BVUCOEP. Drama, music, dance, literature, fine arts, photography and the college band under one committee, and the team behind <b>Bharatiyam</b>.</p>
+          <div class="hero-cta">
+            <a class="btn btn-dark" href="#clubs">Explore the clubs</a>
+            <a class="btn btn-line" href="#bharatiyam">Bharatiyam</a>
+          </div>
+        </div>
+        <div class="mandala-wrap" id="mandalaWrap">
+          <canvas id="mandala" aria-hidden="true"></canvas>
+          <div class="logo3d" id="logo3d">
+            <span class="logo3d-depth" aria-hidden="true"></span>
+            <img src="assets/logo.png" alt="Art Circle logo">
+          </div>
+          <div class="orbit" id="orbit"></div>
+        </div>
+      </div>
+    </header>
+    <div class="marquee" aria-hidden="true"><div class="marquee-track" id="marquee"></div></div>
+    <section class="sec">
+      <div class="wrap">
+        <div class="sec-head">
+          <p class="eyebrow">Under Art Circle</p>
+          <h2>Six clubs, one circle</h2>
+        </div>
+        <div class="club-strip" id="homeClubs"></div>
+      </div>
+    </section>
+    <section class="sec sec-tint">
+      <div class="wrap bh-teaser">
+        <div class="poster-fan" id="posterFan"></div>
+        <div>
+          <p class="eyebrow">Conducted by Art Circle</p>
+          <h2 class="big">Bharatiyam</h2>
+          <p class="lead" id="homeBhText"></p>
+          <div class="hero-cta">
+            <a class="btn btn-gold" href="#bharatiyam">About Bharatiyam</a>
+            <a class="btn btn-ghost" href="#schedule">See the schedule</a>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section class="sec">
+      <div class="wrap">
+        <div class="sec-head">
+          <p class="eyebrow">Explore</p>
+          <h2>More from Art Circle</h2>
+        </div>
+        <div class="explore">
+          <a class="ex-card" href="#team"><span class="eyebrow">The people</span><b>Core team</b><span>Meet the council that runs Art Circle and Bharatiyam.</span><i aria-hidden="true">→</i></a>
+          <a class="ex-card" href="#schedule"><span class="eyebrow">The calendar</span><b>Schedule</b><span>Every Bharatiyam event, day by day.</span><i aria-hidden="true">→</i></a>
+          <a class="ex-card" href="#gallery"><span class="eyebrow">The moments</span><b>Gallery</b><span>Photos from Bharatiyam and Art Circle events.</span><i aria-hidden="true">→</i></a>
+        </div>
+      </div>
+    </section>
+  </section>
+  <section class="page" data-page="about" id="page-about">
+    <header class="page-head"><div class="wrap"><p class="eyebrow">Who we are</p><h1>About</h1></div><svg class="ph-mandala" aria-hidden="true"><use href="#mandala-sym"/></svg></header>
+    <div class="wrap page-body" id="aboutBody"></div>
+  </section>
+  <section class="page" data-page="clubs" id="page-clubs">
+    <header class="page-head"><div class="wrap"><p class="eyebrow">Under Art Circle</p><h1>The Clubs</h1></div><svg class="ph-mandala" aria-hidden="true"><use href="#mandala-sym"/></svg></header>
+    <div class="wrap page-body"><div class="clubs-grid" id="clubsGrid"></div></div>
+  </section>
+
+  <section class="page club-page" data-page="club" id="page-club">
+    <header class="club-head" id="clubHead">
+      <canvas class="club-fx" id="clubFx" aria-hidden="true"></canvas>
+      <div class="club-deco" id="clubDeco" aria-hidden="true"></div>
+      <div class="wrap club-head-in" id="clubHeadIn"></div>
+    </header>
+    <div class="wrap page-body" id="clubBody"></div>
+  </section>
+
+  <section class="page" data-page="bharatiyam" id="page-bharatiyam">
+    <header class="page-head"><div class="wrap"><p class="eyebrow">The annual techno-cultural fest</p><h1>Bharatiyam</h1></div><svg class="ph-mandala" aria-hidden="true"><use href="#mandala-sym"/></svg></header>
+    <div class="wrap page-body" id="bhBody"></div>
+  </section>
+
+  <section class="page" data-page="schedule" id="page-schedule">
+    <header class="page-head"><div class="wrap"><p class="eyebrow" id="schedEyebrow">Bharatiyam calendar</p><h1>Schedule</h1></div><svg class="ph-mandala" aria-hidden="true"><use href="#mandala-sym"/></svg></header>
+    <div class="wrap page-body">
+      <div class="sched-ctrl">
+        <div class="day-tabs" id="dayTabs" role="tablist" aria-label="Festival days"></div>
+        <div class="filters" id="clubFilters" aria-label="Filter by club"></div>
+      </div>
+      <div class="timeline" id="timeline"></div>
+    </div>
+  </section>
+
+  <section class="page" data-page="team" id="page-team">
+    <header class="page-head"><div class="wrap"><p class="eyebrow">The council</p><h1>Core Team</h1></div><svg class="ph-mandala" aria-hidden="true"><use href="#mandala-sym"/></svg></header>
+    <div class="wrap page-body" id="teamBody"></div>
+  </section>
+
+  <section class="page" data-page="gallery" id="page-gallery">
+    <header class="page-head"><div class="wrap"><p class="eyebrow">Bharatiyam in frames</p><h1>Gallery</h1></div><svg class="ph-mandala" aria-hidden="true"><use href="#mandala-sym"/></svg></header>
+    <div class="wrap page-body">
+      <div class="filters" id="galFilters"></div>
+      <div class="masonry" id="masonry"></div>
+    </div>
+  </section>
+
+  <section class="page" data-page="contact" id="page-contact">
+    <header class="page-head"><div class="wrap"><p class="eyebrow">Get in touch</p><h1>Contact</h1></div><svg class="ph-mandala" aria-hidden="true"><use href="#mandala-sym"/></svg></header>
+    <div class="wrap page-body" id="contactBody"></div>
+  </section>
+
+</main>
+
+<footer class="footer">
+  <div class="wrap foot-grid" id="footer"></div>
+  <div class="wrap foot-base">
+    <span id="footCopy"></span>
+    <button type="button" class="to-top" id="toTop">Back to top ↑</button>
+  </div>
+</footer>
+
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Image viewer" hidden>
+  <button class="lb-close" id="lbClose" aria-label="Close">✕</button>
+  <button class="lb-btn lb-prev" id="lbPrev" aria-label="Previous">←</button>
+  <button class="lb-btn lb-next" id="lbNext" aria-label="Next">→</button>
+  <figure><img id="lbImg" alt=""></figure>
+  <div class="lb-cap"><b id="lbTitle"></b><span id="lbMeta"></span></div>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="mandala-sym" viewBox="0 0 200 200">
+      <g fill="none" stroke="currentColor" stroke-width="1.4">
+        <circle cx="100" cy="100" r="96"/><circle cx="100" cy="100" r="70"/><circle cx="100" cy="100" r="40"/><circle cx="100" cy="100" r="16"/>
+        <g id="msP"><path d="M100 4c10 14 10 26 0 36-10-10-10-22 0-36z"/><path d="M100 30c18 8 26 22 22 40-14-2-22-14-22-40z"/><path d="M100 30c-18 8-26 22-22 40 14-2 22-14 22-40z"/></g>
+        <use href="#msP" transform="rotate(30 100 100)"/><use href="#msP" transform="rotate(60 100 100)"/><use href="#msP" transform="rotate(90 100 100)"/>
+        <use href="#msP" transform="rotate(120 100 100)"/><use href="#msP" transform="rotate(150 100 100)"/><use href="#msP" transform="rotate(180 100 100)"/>
+        <use href="#msP" transform="rotate(210 100 100)"/><use href="#msP" transform="rotate(240 100 100)"/><use href="#msP" transform="rotate(270 100 100)"/>
+        <use href="#msP" transform="rotate(300 100 100)"/><use href="#msP" transform="rotate(330 100 100)"/>
+      </g>
+    </symbol>
+  </defs>
+</svg>
+
+<script src="js/data.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
