@@ -10,6 +10,7 @@ window.SITE = {
     email: "artcirclebvucoep@gmail.com",        
   },
   about: {
+    banner: "assets/events/art-circle-banner.jpg",
     headline: "The creative hub of BVUCOEP",
     paragraphs: [
       "Art Circle is the creative hub of BVUCOEP, bringing together artists across drama, music, dance, literature, fine arts, photography and band culture.",
@@ -121,7 +122,6 @@ window.SITE = {
     lastEdition: "2026",       
     nextEdition: "2027",
     about: "Bharatiyam is the annual techno-cultural fest of BV(DU) College of Engineering, Pune, and Art Circle is trusted with conducting it. Competitions from all six clubs, talk shows, fashion, music and dance take over the campus for the festival days.",
-    banner: "assets/events/art-circle-banner.jpg",
     posters: [
       "assets/events/art-circle-poster.jpg",
       "assets/events/unheard.png",

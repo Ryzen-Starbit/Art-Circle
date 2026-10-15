@@ -127,7 +127,7 @@ console.log('%c %c '+s+' %c ','font-size:24px;','background:linear-gradient(90de
     const box = $("#clubMembers"); if (!box) return;
     box.innerHTML = `<p class="eyebrow" style="margin-bottom:16px">Members</p><p class="empty-note">Loading the member list…</p>`;
     let all;
-    try { all = await loadMembers(); } catch (e) { membersCache = null; box.innerHTML = `<p class="eyebrow" style="margin-bottom:16px">Members</p><p class="empty-note">The member list will appear here once <b>${esc(S.membersFile || "data/members.xlsx")}</b> is added.</p>`; return; }
+    try { all = await loadMembers(); } catch (e) { membersCache = null; box.innerHTML = `<p class="eyebrow" style="margin-bottom:16px">Members</p><p class="empty-note">The member list will appear here once <b>${esc(S.membersFile || "data/members.xlsx")}</b> is added. It loads when the site is opened from a web server (your hosting, or Live Server in VS Code).</p>`; return; }
     if (currentClub !== id) return;
     const list = all.filter(r => r.club === id);
     if (!list.length) { box.innerHTML = `<p class="eyebrow" style="margin-bottom:16px">Members</p><p class="empty-note">No members listed for this club yet.</p>`; return; }
@@ -191,6 +191,7 @@ console.log('%c %c '+s+' %c ','font-size:24px;','background:linear-gradient(90de
     about() {
       const A = S.about, C = S.core.current;
       $("#aboutBody").innerHTML = `
+        ${A.banner ? `<div class="bh-banner"><img src="${esc(A.banner)}" alt="Art Circle"></div>` : ""}
         <div class="block about-grid">
           <div>
             <p class="eyebrow">Art Circle</p>
@@ -221,7 +222,6 @@ console.log('%c %c '+s+' %c ','font-size:24px;','background:linear-gradient(90de
       const B = S.bharatiyam;
       const hl = S.events.filter(e => e.highlight);
       $("#bhBody").innerHTML = `
-        ${B.banner ? `<button class="bh-banner" data-zoom="${esc(B.banner)}" data-title="Art Circle × Bharatiyam ${esc(B.lastEdition)}"><img src="${esc(B.banner)}" alt="Art Circle at Bharatiyam ${esc(B.lastEdition)}"></button>` : ""}
         <div class="block bh-intro">
           <div>
             <p class="eyebrow">Conducted by Art Circle</p>

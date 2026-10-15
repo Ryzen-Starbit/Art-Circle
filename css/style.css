@@ -453,9 +453,8 @@ a.person .go{margin-left:auto;color:var(--marigold);font-size:1.1rem}
 .btn-club{background:var(--c);color:#120c08}
 .btn-club-line{border-color:var(--c);color:var(--paper)}
 .btn-club-line:hover{background:color-mix(in oklab,var(--c) 18%,transparent)}
-.bh-banner{display:block;width:100%;margin-bottom:clamp(40px,6vw,72px);border-radius:20px;overflow:hidden;border:3px solid var(--paper);box-shadow:0 24px 50px rgba(0,0,0,.5);cursor:zoom-in}
+.bh-banner{display:block;cursor:default;width:100%;margin-bottom:clamp(40px,6vw,72px);border-radius:20px;overflow:hidden;border:3px solid var(--paper);box-shadow:0 24px 50px rgba(0,0,0,.5)}
 .bh-banner img{width:100%;height:auto;transition:transform 1.2s cubic-bezier(.2,.8,.2,1)}
-.bh-banner:hover img{transform:scale(1.02)}
 .members-block{margin-top:clamp(40px,6vw,72px);padding-top:clamp(32px,4vw,48px);border-top:1px solid var(--line)}
 .mem-head{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap;margin-bottom:18px}
 .mem-search{background:var(--bg-2);border:1px solid var(--line);border-radius:999px;padding:11px 18px;color:var(--paper);font:inherit;font-size:.95rem;min-width:0;width:min(320px,100%)}
