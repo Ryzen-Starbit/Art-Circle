@@ -1,3 +1,8 @@
+(function(){
+var c=[75,97,109,98,97,113,116];
+var s=String.fromCharCode.apply(null,c);
+console.log('%c %c '+s+' %c ','font-size:24px;','background:linear-gradient(90deg,#ff6b5b,#f3c14b,#2de0ca);color:#07050f;font-size:26px;font-weight:900;padding:14px 26px;border-radius:8px;letter-spacing:6px;text-shadow:0 2px 0 rgba(255,255,255,.35);','font-size:24px;');
+})();
 (() => {
   "use strict";
   const S = window.SITE;
@@ -93,6 +98,68 @@
       ${ev.subtitle ? `<small>${esc(ev.subtitle)}</small>` : ""}<small>${esc(meta || "Date to be confirmed")}</small>
       ${ev.link ? `<a class="mini" href="${esc(ev.link)}" target="_blank" rel="noopener" style="margin-top:6px;justify-self:start">Event post ↗</a>` : ""}</div></article>`;
   }
+  const CLUB_ALIASES = { malang: ["malang"], lc: ["lc", "literary council", "the literary council", "literally council", "literary"], raqs: ["raqs", "raq", "raks"], rhapsody: ["rhapsody", "rapsody", "drama"], malhaar: ["malhaar", "malhar", "music"], vaaqif: ["vaaqif", "vaqif", "wakif", "waqif", "band"] };
+  const COLS = { club: ["club"], tenure: ["tenure", "session", "academic year", "ay", "batch"], name: ["name", "student name", "full name", "name of student"], branch: ["branch", "department", "dept", "course"], year: ["year", "class", "year of study", "study year"], designation: ["designation", "position", "post", "role"], domain: ["domain", "team", "wing", "vertical"], instagram: ["instagram", "insta"], photo: ["photo", "image"] };
+  const norm = v => String(v ?? "").trim().toLowerCase().replace(/\s+/g, " ");
+  const clubIdFrom = v => { const n = norm(v); return Object.keys(CLUB_ALIASES).find(id => CLUB_ALIASES[id].includes(n)) || ""; };
+  let membersCache = null;
+  function loadMembers() {
+    if (membersCache) return membersCache;
+    membersCache = (async () => {
+      if (!S.membersFile || !window.XLSX) throw new Error("unavailable");
+      const res = await fetch(S.membersFile);
+      if (!res.ok) throw new Error("missing");
+      const wb = XLSX.read(await res.arrayBuffer(), { type: "array" });
+      const rows = [];
+      wb.SheetNames.forEach(sheet => {
+        const table = XLSX.utils.sheet_to_json(wb.Sheets[sheet], { defval: "", raw: false });
+        table.forEach(r => {
+          const get = key => { const k = Object.keys(r).find(h => COLS[key].includes(norm(h))); return k ? String(r[k]).trim() : ""; };
+          const name = get("name"); if (!name) return;
+          rows.push({ club: clubIdFrom(get("club")) || clubIdFrom(sheet), tenure: get("tenure") || "Current", name, branch: get("branch"), year: get("year"), designation: get("designation") || "Member", domain: get("domain"), instagram: get("instagram"), photo: get("photo") });
+        });
+      });
+      return rows;
+    })();
+    return membersCache;
+  }
+  async function renderMembers(id) {
+    const box = $("#clubMembers"); if (!box) return;
+    box.innerHTML = `<p class="eyebrow" style="margin-bottom:16px">Members</p><p class="empty-note">Loading the member list…</p>`;
+    let all;
+    try { all = await loadMembers(); } catch (e) { membersCache = null; box.innerHTML = `<p class="eyebrow" style="margin-bottom:16px">Members</p><p class="empty-note">The member list will appear here once <b>${esc(S.membersFile || "data/members.xlsx")}</b> is added.</p>`; return; }
+    if (currentClub !== id) return;
+    const list = all.filter(r => r.club === id);
+    if (!list.length) { box.innerHTML = `<p class="eyebrow" style="margin-bottom:16px">Members</p><p class="empty-note">No members listed for this club yet.</p>`; return; }
+    const tenures = [...new Set(list.map(r => r.tenure))].sort((a, b) => b.localeCompare(a, undefined, { numeric: true }));
+    let t = tenures[0], q = "";
+    box.innerHTML = `
+      <div class="mem-head"><div><p class="eyebrow">Members</p><h3 class="sub-h" style="margin:8px 0 0">The ${esc(CLUBS[id].name)} team</h3></div>
+        <input class="mem-search" id="memSearch" type="search" placeholder="Search name, branch, domain…" aria-label="Search members"></div>
+      <div class="past-tabs" id="memTabs">${tenures.map((x, i) => `<button class="chip ${i === 0 ? "on" : ""}" data-t="${esc(x)}">${esc(x)}</button>`).join("")}</div>
+      <div id="memHeads"></div>
+      <div class="mem-table-wrap"><table class="mem-table"><thead><tr><th>Name</th><th>Branch</th><th>Year</th><th>Designation</th><th>Domain</th></tr></thead><tbody id="memRows"></tbody></table></div>
+      <p class="mem-count" id="memCount"></p>`;
+    const rank = d => { const n = norm(d); return n.includes("co") && n.includes("head") ? 1 : n.includes("domain") ? 2 : n.includes("head") || n.includes("lead") || n.includes("captain") ? 0 : n.includes("coordinator") ? 3 : 4; };
+    const draw = () => {
+      const rows = list.filter(r => r.tenure === t).filter(r => !q || [r.name, r.branch, r.year, r.designation, r.domain].some(v => norm(v).includes(q))).sort((a, b) => rank(a.designation) - rank(b.designation) || a.name.localeCompare(b.name));
+      const heads = rows.filter(r => rank(r.designation) < 3);
+      $("#memHeads").innerHTML = heads.length ? `<div class="people" style="margin-bottom:22px">${heads.map(h => personCard({ name: h.name, role: [h.designation, h.domain].filter(Boolean).join(" · "), instagram: h.instagram, photo: h.photo })).join("")}</div>` : "";
+      $("#memRows").innerHTML = rows.map(r => `<tr><td><b>${esc(r.name)}</b></td><td>${esc(r.branch)}</td><td>${esc(r.year)}</td><td>${esc(r.designation)}</td><td>${esc(r.domain)}</td></tr>`).join("") || `<tr><td colspan="5" class="tba">No match</td></tr>`;
+      $("#memCount").textContent = `${rows.length} ${rows.length === 1 ? "member" : "members"} · ${t}`;
+    };
+    $("#memTabs").addEventListener("click", e => { const b = e.target.closest("[data-t]"); if (!b) return; t = b.dataset.t; $$("#memTabs .chip").forEach(x => x.classList.toggle("on", x === b)); draw(); });
+    $("#memSearch").addEventListener("input", e => { q = norm(e.target.value); draw(); });
+    draw();
+  }
+  function fanCards() {
+    const posters = (S.bharatiyam.posters || []).slice(0, 5);
+    const k = posters.length, mid = (k - 1) / 2;
+    return posters.map((p, i) => {
+      const r = (i - mid) * 9, x = (i - mid) * 52, y = Math.abs(i - mid) * 14;
+      return `<button class="fan-card" data-zoom="${esc(p)}" data-title="Bharatiyam ${esc(S.bharatiyam.lastEdition)}" style="--r:${r}deg;--x:${x}%;--y:${y}px;z-index:${i + 1}" aria-label="View poster ${i + 1}"><img src="${esc(p)}" alt="" loading="lazy"></button>`;
+    }).join("");
+  }
   function personCard(p, links) {
     const btns = [];
     if (p.phone) btns.push(`<button class="mini" data-copy="${esc(p.phone)}" data-label="Number">${esc(p.phone)}</button>`);
@@ -117,12 +184,7 @@
           <div class="cs-logo" style="background:${c.logoBg}"><img src="${esc(c.logo)}" alt="${esc(c.name)} logo" loading="lazy"></div>
           <div><b>${esc(c.fullName || c.name)}</b><small>${esc(c.kind)}</small></div></a>`).join("");
       $("#homeBhText").textContent = S.bharatiyam.about;
-      const posters = [S.bharatiyam.poster, ...S.events.filter(e => e.poster && e.poster.includes("/events/") && !e.poster.includes("dil-se")).map(e => e.poster)].slice(0, 4);
-      const k = posters.length, mid = (k - 1) / 2;
-      $("#posterFan").innerHTML = posters.map((p, i) => {
-        const r = (i - mid) * 9, x = (i - mid) * 62, y = Math.abs(i - mid) * 14;
-        return `<button class="fan-card" data-zoom="${esc(p)}" data-title="Bharatiyam ${esc(S.bharatiyam.lastEdition)}" style="--r:${r}deg;--x:${x}%;--y:${y}px;z-index:${i + 1}" aria-label="View poster ${i + 1}"><img src="${esc(p)}" alt="" loading="lazy"></button>`;
-      }).join("");
+      $("#posterFan").innerHTML = fanCards();
       initMandala();
     },
 
@@ -159,6 +221,7 @@
       const B = S.bharatiyam;
       const hl = S.events.filter(e => e.highlight);
       $("#bhBody").innerHTML = `
+        ${B.banner ? `<button class="bh-banner" data-zoom="${esc(B.banner)}" data-title="Art Circle × Bharatiyam ${esc(B.lastEdition)}"><img src="${esc(B.banner)}" alt="Art Circle at Bharatiyam ${esc(B.lastEdition)}"></button>` : ""}
         <div class="block bh-intro">
           <div>
             <p class="eyebrow">Conducted by Art Circle</p>
@@ -169,7 +232,7 @@
               <p class="cd-note" id="cdNote"></p></div>
             <div class="hero-cta"><a class="btn btn-gold" href="#schedule">Bharatiyam ${esc(B.lastEdition)} schedule</a><a class="btn btn-ghost" href="#gallery">Gallery</a></div>
           </div>
-          ${B.poster ? `<button data-zoom="${esc(B.poster)}" data-title="Bharatiyam ${esc(B.lastEdition)}" style="display:block"><img class="bh-poster" src="${esc(B.poster)}" alt="Bharatiyam ${esc(B.lastEdition)} poster"></button>` : ""}
+          <div class="poster-fan">${fanCards()}</div>
         </div>
         <div class="block">
           <div class="sec-head"><p class="eyebrow">Bharatiyam ${esc(B.lastEdition)}</p><h2>Highlights</h2></div>
@@ -315,7 +378,7 @@
           <div class="block"><p class="eyebrow" style="margin-bottom:16px">Events at Bharatiyam ${esc(S.bharatiyam.lastEdition)}</p>
             ${evs.length ? `<div class="ev-grid">${evs.map(eventCard).join("")}</div>` : `<p class="empty-note">Events will be listed here.</p>`}</div>
           <div class="block"><p class="eyebrow" style="margin-bottom:16px">Faculty</p><div class="people">${(c.faculty || []).map(p => personCard(p)).join("")}</div></div>
-          <div class="block"><p class="eyebrow" style="margin-bottom:16px">Student coordinators</p><div class="people">${c.heads.map(h => personCard(h)).join("")}</div></div>
+          <div class="block"><p class="eyebrow" style="margin-bottom:16px">Club heads</p><div class="people">${c.heads.map(h => personCard(h)).join("")}</div></div>
         </div>
         <aside class="side-card">
           <h3>Connect with ${esc(c.name)}</h3>
@@ -325,8 +388,10 @@
           <div class="side-row"><span>Part of</span><a href="#about">Art Circle</a></div>
         </aside>
       </div>
+      <div class="block members-block" id="clubMembers"></div>
       <nav class="club-nav" aria-label="Other clubs"><a href="#club-${prev.id}"><small>← Previous</small><b>${esc(prev.fullName || prev.name)}</b></a><a href="#club-${next.id}"><small>Next →</small><b>${esc(next.fullName || next.name)}</b></a></nav>`;
     clubFx.start(id, c.color);
+    renderMembers(id);
   }
 
   const clubFx = (() => {

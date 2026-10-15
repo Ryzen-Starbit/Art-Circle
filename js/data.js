@@ -1,4 +1,5 @@
 window.SITE = {
+  membersFile: "data/members.xlsx",
   committee: {
     name: "Art Circle",
     college: "Bharati Vidyapeeth (Deemed to be University) College of Engineering, Pune",
@@ -120,7 +121,13 @@ window.SITE = {
     lastEdition: "2026",       
     nextEdition: "2027",
     about: "Bharatiyam is the annual techno-cultural fest of BV(DU) College of Engineering, Pune, and Art Circle is trusted with conducting it. Competitions from all six clubs, talk shows, fashion, music and dance take over the campus for the festival days.",
-    poster: "assets/events/bharatiyam-2026-poster.jpg",
+    banner: "assets/events/art-circle-banner.jpg",
+    posters: [
+      "assets/events/art-circle-poster.jpg",
+      "assets/events/unheard.png",
+      "assets/events/irshaad.png",
+      "assets/events/raag-rang.png"
+    ],
     nextStart: "",
     committee: [  
       { name: "Dr. Pramod A. Jadhav", role: "In-charge" },
@@ -131,19 +138,19 @@ window.SITE = {
     ]
   },
   events: [
-    { title: "The Unheard", subtitle: "On Trial", club: "", edition: "2026",
+    { title: "The Unheard", subtitle: "On Trial", club: "lc", edition: "2026",
       date: "2026-02-26", time: "", end: "", venue: "Central Wing",
-      poster: "assets/events/unheard.jpg", link: "", register: "",
+      poster: "assets/events/unheard.png", link: "", register: "",
       note: "Cash prizes to be won", highlight: false },
 
     { title: "Irshaad", subtitle: "The Literary Council presents", club: "lc", edition: "2026",
       date: "2026-02-27", time: "12:30", end: "", venue: "Central Auditorium",
-      poster: "assets/events/irshaad.jpg", link: "", register: "",
+      poster: "assets/events/irshaad.png", link: "", register: "",
       note: "Cash prizes to be won", highlight: false },
 
     { title: "Raag Rang", subtitle: "Solo singing · Classical, Bollywood, Western", club: "malhaar", edition: "2026",
       date: "2026-02-27", time: "", end: "", venue: "Central Auditorium",
-      poster: "assets/events/raagrang.jpg", link: "", register: "", highlight: false },
+      poster: "assets/events/raag-rang.png", link: "", register: "", highlight: false },
 
     { title: "Bayaan", subtitle: "The Battle of Bands", club: "vaaqif", edition: "2026",
       date: "2026-02-27", time: "", end: "", venue: "Main Ground",
@@ -157,7 +164,7 @@ window.SITE = {
 
     { title: "Supernova", subtitle: "Solo & duet dance · RAQS presents", club: "raqs", edition: "2026",
       date: "", time: "", end: "", venue: "",
-      poster: "assets/events/supernova.jpg", link: "", register: "",
+      poster: "assets/events/supernova.png", link: "", register: "",
       note: "", highlight: false },
 
     { title: "Dil Se", subtitle: "A talk show with Imtiaz Ali", club: "artcircle", edition: "2026",
@@ -165,7 +172,7 @@ window.SITE = {
       poster: "assets/events/dil-se.jpg", link: "", register: "",
       note: "Art Circle hosted filmmaker Imtiaz Ali at Bharatiyam", highlight: true },
 
-    { title: "Fashion Euphoria", subtitle: "Fashion show & cosplay", club: "", edition: "2026",
+    { title: "Fashion Euphoria", subtitle: "Fashion show & cosplay", club: "malang", edition: "2026",
       date: "", time: "", end: "", venue: "",
       poster: "assets/events/fashion-euphoria-bw.jpg", link: "", register: "",
       note: "", highlight: true },
@@ -185,13 +192,13 @@ window.SITE = {
       tenure: "2025–26",
       members: [
         { name: "Adwait Padmawar", role: "Joint Secretary", short: "JS",
-          photo: "assets/core/adwait-padmawar.jpeg", instagram: "", intro: "" },
+          photo: "assets/core/adwait-padmawar.jpeg", instagram: "adwait_padmawar", intro: "A creatively versatile individual with expertise across fine arts, design, music, and visual media. Known for his calm leadership, strong teamwork, and achievements at state and national levels in art and music, he brings a multidimensional artistic perspective marked by depth, discipline, and innovation." },
         { name: "Dhruv Tripathi", role: "Deputy Joint Secretary", short: "DJS",
-          photo: "assets/core/dhruv.jpeg", instagram: "", intro: "" },
+          photo: "assets/core/dhruv.jpeg", instagram: "dhruv_mosby", intro: "An art enthusiast with a strong background in music, performance, and media handling. With experience in managing performances, social media presence, and large-scale cultural events, he adds dynamic energy, visibility, and effective coordination to creative initiatives." },
         { name: "Kshitiz Prakash", role: "Deputy Joint Secretary", short: "DJS",
-          photo: "assets/core/kshitiz.jpg", instagram: "", intro: "" },
+          photo: "assets/core/kshitiz.jpg", instagram: "beyond.kshitiz", intro: "A literature- and poetry-driven creative with a strong foundation in content creation and editorial work across cultural and academic platforms. With achievements in slam poetry and debates, he contributes articulate expression, editorial leadership, and a refined creative vision backed by strong organizational skills." },
         { name: "Uchit Sharma", role: "Treasurer", short: "Treasurer",
-          photo: "assets/core/uchit.jpeg", instagram: "", intro: "" }
+          photo: "assets/core/uchit.jpeg", instagram: "uchitsharma_", intro: "With extensive experience in event management, stage coordination, and artist handling across college, national, and international platforms. Known for his strong leadership, crisis management, and seamless coordination, ensuring smooth execution and impactful event experiences." }
       ]
     },
     past: [
@@ -199,9 +206,9 @@ window.SITE = {
         members: [
           { name: "Shaleen Chakraborty", role: "Joint Secretary", short: "JS",
             photo: "assets/core/shaleen-chakraborty.jpg", instagram: "", intro: "" },
-          { name: "Rohan Deshpande", role: "Deputy Joint Secretary", short: "DJS", photo: "", instagram: "", intro: "" },
-          { name: "Atul Raj", role: "Deputy Joint Secretary", short: "DJS", photo: "", instagram: "", intro: "" },
-          { name: "Rishika Jain", role: "Treasurer", short: "Treasurer", photo: "", instagram: "", intro: "" }
+          { name: "Rohan Deshpande", role: "Deputy Joint Secretary", short: "DJS", photo: "assets/core/rohan-deshpande.jpg", instagram: "", intro: "" },
+          { name: "Atul Raj", role: "Deputy Joint Secretary", short: "DJS", photo: "assets/core/atul-raj.jpg", instagram: "", intro: "" },
+          { name: "Rishika Jain", role: "Treasurer", short: "Treasurer", photo: "assets/core/rishika-jain.jpg", instagram: "", intro: "" }
         ] }
     ]
   },
@@ -212,11 +219,10 @@ window.SITE = {
     { src: "assets/events/bayaan-live.jpg",         title: "Bayaan · Battle of Bands",    tag: "Music" },
     { src: "assets/events/fashion-euphoria-bw.jpg", title: "Fashion Euphoria",           tag: "Fashion" },
     { src: "assets/events/ghazal-night.jpg",        title: "Ghazal Night",               tag: "Music" },
-    { src: "assets/gallery/fashion-euphoria.jpg",    title: "Fashion Euphoria",           tag: "Fashion" },
-    { src: "assets/gallery/grand-finale.jpg",        title: "Bharatiyam 2026",            tag: "Moments" },
-    { src: "assets/gallery/team-photo.jpg",          title: "Team Bharatiyam",            tag: "Moments" },
-    { src: "assets/gallery/hands.jpg",               title: "Together",                   tag: "Moments" },
-    { src: "assets/gallery/holi.jpg",                title: "Colours",                    tag: "Moments" },
-    { src: "assets/gallery/bharatiyam-2024.jpg",     title: "Bharatiyam 2024",            tag: "Moments" }
+    { src: "assets/events/art-circle-poster.jpg",   title: "Art Circle × Bharatiyam",    tag: "Posters" },
+    { src: "assets/events/unheard.png",             title: "The Unheard",                tag: "Posters" },
+    { src: "assets/events/irshaad.png",             title: "Irshaad",                    tag: "Posters" },
+    { src: "assets/events/raag-rang.png",           title: "Raag Rang",                  tag: "Posters" },
+    { src: "assets/events/supernova.png",           title: "Supernova",                  tag: "Posters" }
   ]
 };
