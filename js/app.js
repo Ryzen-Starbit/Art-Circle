@@ -66,13 +66,50 @@ console.log('%c %c '+s+' %c ','font-size:24px;','background:linear-gradient(90de
     window.scrollTo(0, 0);
     onScroll();
   }
+  let origin = { x: innerWidth / 2, y: innerHeight / 2 }, wiping = null;
+  document.addEventListener("pointerdown", e => { origin = { x: e.clientX, y: e.clientY }; }, true);
   function go(first) {
     const route = parse(location.hash);
     closeMenu();
-    if (first || reduce) { swap(route); return; }
-    const w = $("#wipe");
-    w.classList.remove("out"); w.classList.add("in");
-    setTimeout(() => { swap(route); w.classList.remove("in"); w.classList.add("out"); setTimeout(() => w.classList.remove("out"), 500); }, 470);
+    if (first || reduce || !document.getElementById("wipe").animate) { swap(route); return; }
+    playWipe(() => swap(route));
+  }
+  (function drawWipeRing() {
+    const cv = document.querySelector(".wipe-ring"); if (!cv) return;
+    const x = cv.getContext("2d"), W = cv.width, R = W * .42;
+    const col = { p1: "#e88a2e", p2: "#efab4a", deep: "#cf4a1f", line: "#f0c75a" };
+    const petals = (r0, n, len, wid, rot, fill, inner) => { x.save(); x.rotate(rot); for (let i = 0; i < n; i++) { x.rotate(Math.PI * 2 / n); x.beginPath(); x.moveTo(r0, -wid); x.quadraticCurveTo(r0 + len * .55, -wid * 1.15, r0 + len, 0); x.quadraticCurveTo(r0 + len * .55, wid * 1.15, r0, wid); x.closePath(); x.fillStyle = fill; x.fill(); x.lineWidth = 1.6; x.strokeStyle = col.line; x.stroke(); if (inner) { x.beginPath(); x.moveTo(r0 + len * .12, 0); x.quadraticCurveTo(r0 + len * .5, -wid * .55, r0 + len * .82, 0); x.quadraticCurveTo(r0 + len * .5, wid * .55, r0 + len * .12, 0); x.lineWidth = 1; x.stroke(); } } x.restore(); };
+    const dots = (r0, n, r, f) => { x.fillStyle = f; for (let i = 0; i < n; i++) { const a = i / n * Math.PI * 2; x.beginPath(); x.arc(Math.cos(a) * r0, Math.sin(a) * r0, r, 0, 7); x.fill(); } };
+    x.translate(W / 2, W / 2);
+    petals(R * .78, 20, R * .26, R * .095, 0, col.p1, true);
+    petals(R * .70, 20, R * .22, R * .07, Math.PI / 20, col.p2, false);
+    x.beginPath(); x.arc(0, 0, R * .70, 0, 7); x.lineWidth = 2; x.strokeStyle = col.line; x.stroke();
+    dots(R * .655, 48, R * .012, col.deep);
+    petals(R * .50, 16, R * .16, R * .07, 0, col.deep, true);
+    dots(R * 1.08, 60, R * .014, col.line);
+  })();
+  function playWipe(midway) {
+    const w = $("#wipe"), disc = $(".wipe-disc", w), logo = $(".wipe-logo", w), ring = $(".wipe-ring", w);
+    if (wiping) { wiping.forEach(a => a.cancel()); }
+    w.getAnimations({ subtree: true }).forEach(a => a.cancel());
+    w.style.display = "grid"; w.style.opacity = "1";
+    const r = Math.hypot(Math.max(origin.x, innerWidth - origin.x), Math.max(origin.y, innerHeight - origin.y));
+    const ease = "cubic-bezier(.7,0,.25,1)";
+    const a1 = disc.animate([{ clipPath: `circle(0px at ${origin.x}px ${origin.y}px)` }, { clipPath: `circle(${r}px at ${origin.x}px ${origin.y}px)` }], { duration: 480, easing: ease, fill: "forwards" });
+    const a2 = logo.animate([
+      { transform: "scale(.35) rotate(-360deg)", opacity: 0, filter: "grayscale(1) brightness(1.6)" },
+      { transform: "scale(.8) rotate(-180deg)", opacity: 1, filter: "grayscale(1) brightness(1.6)", offset: .3 },
+      { transform: "scale(1) rotate(0deg)", opacity: 1, filter: "grayscale(1) brightness(1.6)", offset: .72 },
+      { transform: "scale(1.08) rotate(0deg)", opacity: 1, filter: "grayscale(0) brightness(1)", offset: .86 },
+      { transform: "scale(1) rotate(0deg)", opacity: 1, filter: "grayscale(0) brightness(1)" }
+    ], { duration: 900, delay: 200, easing: "cubic-bezier(.3,.7,.2,1)", fill: "both" });
+    const a3 = ring.animate([{ transform: "scale(.6) rotate(0deg)", opacity: 0 }, { transform: "scale(1) rotate(-90deg)", opacity: .9, offset: .6 }, { transform: "scale(1.02) rotate(-120deg)", opacity: .9 }], { duration: 1100, delay: 200, easing: "ease-out", fill: "both" });
+    wiping = [a1, a2, a3];
+    setTimeout(midway, 700);
+    a2.finished.then(() => {
+      const out = w.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 380, easing: "ease-in", fill: "forwards" });
+      return out.finished;
+    }).then(() => { w.getAnimations({ subtree: true }).forEach(a => a.cancel()); w.style.display = "none"; wiping = null; }).catch(() => {});
   }
   addEventListener("hashchange", () => go(false));
 
@@ -295,23 +332,33 @@ console.log('%c %c '+s+' %c ','font-size:24px;','background:linear-gradient(90de
       const past = C.past.slice(0, 2);
       $("#teamBody").innerHTML = `
         <div class="block">
-          <div class="sec-head"><p class="eyebrow">Current core · ${esc(C.current.tenure)}</p><h2>The wheel turns, the circle stays</h2><p style="color:var(--muted)">Move your cursor across the wheel to turn it. Hover over a member to read about them.</p></div>
+          <div class="sec-head"><p class="eyebrow">Current core · ${esc(C.current.tenure)}</p><h2>The wheel turns, the circle stays</h2><p style="color:var(--muted)">Move your cursor across the wheel to turn it. Hover over a member to read about them below.</p></div>
           <div class="ring-stage" id="ringStage"><div class="ring" id="ring">${M.map((m, i) => `
             <div class="r-card" data-i="${i}" tabindex="0" aria-label="${esc(m.name)}, ${esc(m.role)}">${photoBlock(m)}
               <div class="r-meta"><b class="${m.name ? "" : "tba"}">${esc(m.name || "To be added")}</b><small>${esc(m.short || m.role)}</small></div>
-              <div class="r-over"><span class="role">${esc(m.role)}</span><b>${esc(m.name || "To be added")}</b>
-                <p>${esc(m.intro || "A short intro about this member will appear here.")}</p>
-                ${m.instagram ? `<a class="mini" style="align-self:flex-start" href="${esc(insta(m.instagram))}" target="_blank" rel="noopener">${esc(handle(m.instagram))}</a>` : ""}</div>
             </div>`).join("")}</div>
             <p class="ring-hint">${finePointer ? "move the cursor to turn the wheel" : "swipe to turn · tap a member"}</p>
           </div>
+          <div class="m-info" id="mInfo" aria-live="polite"><p class="m-hint">${finePointer ? "Hover over a member to read about them" : "Tap a member to read about them"}</p></div>
         </div>
         <div class="block">
           <div class="sec-head"><p class="eyebrow">Legacy</p><h2>Previous cores</h2></div>
           <div class="past-tabs" id="pastTabs">${past.map((p, i) => `<button class="chip ${i === 0 ? "on" : ""}" data-p="${i}">${esc(p.tenure)}</button>`).join("")}</div>
           <div class="past-grid" id="pastGrid"></div>
         </div>`;
-      ring3d($("#ringStage"), M.length);
+      const info = $("#mInfo"), hint = info.innerHTML;
+      let shown = -1;
+      const showInfo = i => {
+        if (i === shown) return; shown = i;
+        if (i < 0) { info.classList.remove("on"); info.innerHTML = hint; return; }
+        const m = M[i];
+        info.innerHTML = `<div class="m-in">${m.photo ? `<img src="${esc(m.photo)}" alt="">` : `<span class="avatar">${esc(initials(m.name))}</span>`}
+          <div><span class="role">${esc(m.role)}</span><h3>${esc(m.name || "To be added")}</h3>
+          <p>${esc(m.intro || "A short intro about this member will appear here.")}</p>
+          ${m.instagram ? `<a class="mini" href="${esc(insta(m.instagram))}" target="_blank" rel="noopener">${esc(handle(m.instagram))} ↗</a>` : ""}</div></div>`;
+        info.classList.remove("on"); void info.offsetWidth; info.classList.add("on");
+      };
+      ring3d($("#ringStage"), M.length, showInfo);
       const showPast = i => { $("#pastGrid").innerHTML = past[i].members.map(m => `
         <article class="p-card">${photoBlock(m)}<div class="p-body"><span class="eyebrow">${esc(m.role)}</span><h3 style="font-size:1.7rem" class="${m.name ? "" : "tba"}">${esc(m.name || "To be added")}</h3><p>${esc(m.intro || "Intro to be added.")}</p>
         ${m.instagram ? `<a class="mini" style="justify-self:start" href="${esc(insta(m.instagram))}" target="_blank" rel="noopener">${esc(handle(m.instagram))}</a>` : ""}</div></article>`).join(""); };
@@ -507,10 +554,9 @@ console.log('%c %c '+s+' %c ','font-size:24px;','background:linear-gradient(90de
     }
     requestAnimationFrame(frame);
   }
-  function ring3d(stage, n) {
+  function ring3d(stage, n, onPick = () => {}) {
     const ring = $(".ring", stage), cards = $$(".r-card", ring), step = 360 / n;
     let rot = 0, vel = 0, R = 300, lastX = null, hovering = null, front = -1;
-    // cards orbit on a tilted ellipse and always face the viewer, so every member stays readable
     const layout = () => { const w = cards[0].offsetWidth; R = Math.min(stage.clientWidth * .36, Math.max(w * 1.25, n * w * .32)); };
     layout(); new ResizeObserver(layout).observe(stage);
     stage.addEventListener("pointermove", e => {
@@ -525,11 +571,12 @@ console.log('%c %c '+s+' %c ','font-size:24px;','background:linear-gradient(90de
     stage.addEventListener("touchmove", e => { if (tx === null) return; const nx = e.touches[0].clientX; vel += (nx - tx) * .1; tx = nx; }, { passive: true });
     stage.addEventListener("touchend", () => { tx = null; });
     cards.forEach(c => {
-      c.addEventListener("pointerenter", e => { if (e.pointerType === "mouse") hovering = c; });
-      c.addEventListener("pointerleave", () => { if (hovering === c) hovering = null; });
-      c.addEventListener("click", () => { const on = !c.classList.contains("show"); cards.forEach(k => k.classList.remove("show")); c.classList.toggle("show", on); });
-      c.addEventListener("focus", () => { hovering = c; c.classList.add("show"); });
-      c.addEventListener("blur", () => { hovering = null; c.classList.remove("show"); });
+      const i = +c.dataset.i;
+      c.addEventListener("pointerenter", e => { if (e.pointerType === "mouse") { hovering = c; cards.forEach(k => k.classList.toggle("show", k === c)); onPick(i); } });
+      c.addEventListener("pointerleave", e => { if (hovering === c) { hovering = null; c.classList.remove("show"); onPick(-1); } });
+      c.addEventListener("click", () => { const on = !c.classList.contains("show"); cards.forEach(k => k.classList.remove("show")); c.classList.toggle("show", on); onPick(on ? i : -1); });
+      c.addEventListener("focus", () => { hovering = c; cards.forEach(k => k.classList.toggle("show", k === c)); onPick(i); });
+      c.addEventListener("blur", () => { hovering = null; c.classList.remove("show"); onPick(-1); });
     });
     (function frame() {
       if (current === "team") {
